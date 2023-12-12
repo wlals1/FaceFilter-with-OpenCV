@@ -4,7 +4,7 @@
 
 ## **_Put on sunglasses for the camera._**
 
-![sunglasses](https://github.com/wlals1/FaceFilter-with-OpenCV/raw/master/sunglasses.png)
+![sunglasses](https://github.com/wlals1/FaceFilter-with-OpenCV/raw/main/sunglasses.png)
 
 ## You can inspect the face with sunglasses.
 
@@ -104,4 +104,4 @@
 
 # **_Result:_**
 
-![Result](https://github.com/wlals1/FaceFilter-with-OpenCV/raw/master/output.gif)
+![Result](https://github.com/wlals1/FaceFilter-with-OpenCV/raw/main/output.gif)
