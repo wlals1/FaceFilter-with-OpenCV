@@ -1,6 +1,7 @@
 import cv2
+import imageio
 
-def detect_and_draw(img, cascade, nested_cascade, scale, try_flip, glasses):
+def detect_and_draw(img, cascade, nested_cascade, scale, glasses):
     output = img.copy()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     fx = 1 / scale
@@ -30,7 +31,7 @@ def detect_and_draw(img, cascade, nested_cascade, scale, try_flip, glasses):
 
                 output = overlay_image(output, glasses_resized, center)
     
-    cv2.imshow("result", output)
+    return output
 
 def overlay_image(background, foreground, location):
     output = background.copy()
@@ -44,32 +45,40 @@ def overlay_image(background, foreground, location):
 
     return output
 
+def bgr_to_rgb(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 cascade_name = 'haarcascade_frontalface_alt.xml'
 nested_cascade_name = 'haarcascade_eye_tree_eyeglasses.xml'
 
 cascade = cv2.CascadeClassifier(cv2.data.haarcascades + cascade_name)
 nested_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + nested_cascade_name)
 
-glasses_image = 'sunglasses.png'
+glasses_image = './sunglasses.png'
 glasses = cv2.imread(glasses_image, cv2.IMREAD_UNCHANGED)
 
 if glasses is None:
     print("Could not read image -", glasses_image)
     exit()
 
-capture = cv2.VideoCapture(0)
 
-while True:
+capture = cv2.VideoCapture(0)
+    
+frames = []
+
+for _ in range(30):
     ret, frame = capture.read()
 
     if frame is None:
         break
 
-    detect_and_draw(frame, cascade, nested_cascade, 1, False, glasses)
+    result_frame = detect_and_draw(frame, cascade, nested_cascade, 1, glasses)
 
-    key = cv2.waitKey(10)
-    if key == 27 or key == ord('q') or key == ord('Q'):
-        break
+    result_frame_rgb = bgr_to_rgb(result_frame)
+    
+    frames.append(result_frame)
+
+imageio.mimsave('output.gif', [bgr_to_rgb(frame) for frame in frames], duration=0.1)
 
 capture.release()
 cv2.destroyAllWindows()
